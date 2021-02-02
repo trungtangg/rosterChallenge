@@ -1,0 +1,54 @@
+<header class='navbar bg-dark navbar-dark'>
+  <ng-container>
+    <ul class='nav navbar-nav'>
+      <li class='app-title text-white'><strong>Artist Roster</strong></li>
+    </ul>
+  </ng-container>
+</header>
+
+<div role='main' >
+  <br/>
+  <ng-container>
+    <div class="card mx-auto w-75">
+      <div class='card-header'>
+        Welcome to the Roster challenge!
+      </div>
+      <div class='card-body'>
+        <div class='row'>
+          <div class='col-md-6'>
+            <app-search-bar [term]='searchTerm' (search)='searchArtists($event)'></app-search-bar>
+          </div>
+          <div class='col-md-6 my-auto text-center'>
+            <div class='custom-control custom-switch' >
+              <input type='checkbox' class='custom-control-input' id='customSwitch1' [(ngModel)]='isInfiniteScroll' (ngModelChange)='reset();getNewList()'>
+              <label style='cursor:pointer' class='custom-control-label' for='customSwitch1'>Toggle Infinite Scroll</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div
+      class='mx-auto w-75'
+      id='scrollTable'
+      (scrolled)='onScrollDown()'
+      infiniteScroll
+      [immediateCheck]='true'
+      [infiniteScrollDistance]='2'
+      [infiniteScrollThrottle]='50'
+      [infiniteScrollDisabled]='!isInfiniteScroll'>
+      <app-roster-table [artists]='artists' (sort)='setSort($event)' [order]='isDescending' [field]='selectedField' (togglePaid)='setPaid($event)'></app-roster-table>
+    </div>
+    <div *ngIf='!isInfiniteScroll; else spacer' class='card card-footer mx-auto w-75'>
+      <div class='btn-group w-50 mx-auto'>
+        <button [disabled]='currentPage === 1' class="btn btn-outline-{{currentPage === 1 ? 'dark':'primary'}}" (click)='prevPage()'>Previous</button>
+        <button [disabled]='currentPage === totalPages' class="btn btn-outline-{{currentPage === totalPages ? 'dark':'primary'}}" (click)='nextPage()'>Next</button>
+      </div>
+    </div>
+    <ng-template #spacer>
+      <div class='card-footer mx-auto w-75'></div>
+      <br/>
+    </ng-template>
+  </ng-container>
+</div>
+<router-outlet></router-outlet>
